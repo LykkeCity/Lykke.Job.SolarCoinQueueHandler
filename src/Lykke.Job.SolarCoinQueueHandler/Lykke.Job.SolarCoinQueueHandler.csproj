@@ -36,12 +36,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Lykke.Job.SolarCoinQueueHandler.AzureRepositories\Lykke.Job.SolarCoinQueueHandler.AzureRepositories.csproj" />
     <ProjectReference Include="..\Lykke.Job.SolarCoinQueueHandler.Core\Lykke.Job.SolarCoinQueueHandler.Core.csproj" />
     <ProjectReference Include="..\Lykke.Job.SolarCoinQueueHandler.Services\Lykke.Job.SolarCoinQueueHandler.Services.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Contract\" />
-    <Folder Include="TriggerHandlers\" />
   </ItemGroup>
 </Project>
