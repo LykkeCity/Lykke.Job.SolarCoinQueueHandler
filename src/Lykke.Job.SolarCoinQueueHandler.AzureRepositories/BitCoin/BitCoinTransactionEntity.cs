@@ -1,10 +1,9 @@
 using System;
-using Lykke.Job.SolarCoinQueueHandler.Core.Domain.BitCoin;
 using Microsoft.WindowsAzure.Storage.Table;
 
 namespace Lykke.Job.SolarCoinQueueHandler.AzureRepositories.BitCoin
 {
-    public class BitCoinTransactionEntity : TableEntity, IBitcoinTransaction
+    public class BitCoinTransactionEntity : TableEntity
     {
         public static class ByTransactionId
         {
@@ -48,13 +47,6 @@ namespace Lykke.Job.SolarCoinQueueHandler.AzureRepositories.BitCoin
         {
             RequestData = requestData;
             ContextData = contextData;
-        }
-
-
-        internal void UpdateResponse(string resp, DateTime? dateTime)
-        {
-            ResponseData = resp;
-            ResponseDateTime = dateTime ?? DateTime.UtcNow;
         }
     }
 }
