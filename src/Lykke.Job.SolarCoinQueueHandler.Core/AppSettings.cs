@@ -28,13 +28,12 @@ namespace Lykke.Job.SolarCoinQueueHandler.Core
 
         public class IpEndpointSettings
         {
-            public string InternalHost { get; set; }
             public string Host { get; set; }
             public int Port { get; set; }
 
             public IPEndPoint GetClientIpEndPoint(bool useInternal = false)
             {
-                return new IPEndPoint(IPAddress.Parse(useInternal ? InternalHost : Host), Port);
+                return new IPEndPoint(IPAddress.Parse(Host), Port);
             }
         }
         public class SlackNotificationsSettings
