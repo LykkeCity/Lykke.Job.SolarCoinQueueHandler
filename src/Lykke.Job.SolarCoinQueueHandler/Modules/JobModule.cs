@@ -1,6 +1,5 @@
 ﻿using System;
 using Autofac;
-using Autofac.Extensions.DependencyInjection;
 using AzureStorage.Tables;
 using AzureStorage.Tables.Templates.Index;
 using Common;
@@ -14,7 +13,6 @@ using Lykke.Job.SolarCoinQueueHandler.Core.Services;
 using Lykke.Job.SolarCoinQueueHandler.Services;
 using Lykke.Job.SolarCoinQueueHandler.Services.Exchange;
 using Lykke.MatchingEngine.Connector.Services;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Lykke.Job.SolarCoinQueueHandler.Modules
 {
@@ -22,15 +20,11 @@ namespace Lykke.Job.SolarCoinQueueHandler.Modules
     {
         private readonly AppSettings.SolarCoinQueueHandlerSettings _settings;
         private readonly ILog _log;
-        // NOTE: you can remove it if you don't need to use IServiceCollection extensions to register service specific dependencies
-        private readonly IServiceCollection _services;
 
         public JobModule(AppSettings.SolarCoinQueueHandlerSettings settings, ILog log)
         {
             _settings = settings;
             _log = log;
-
-            _services = new ServiceCollection();
         }
 
         protected override void Load(ContainerBuilder builder)
@@ -53,12 +47,10 @@ namespace Lykke.Job.SolarCoinQueueHandler.Modules
             var socketLog = new SocketLogDynamic(i => { },
                 str => Console.WriteLine(DateTime.UtcNow.ToIsoDateTime() + ": " + str));
 
-            builder.BindMeConnector(_settings.MatchingEngine.IpEndpoint.GetClientIpEndPoint(), socketLog);
+            builder.BindMeClient(_settings.MatchingEngine.IpEndpoint.GetClientIpEndPoint(), socketLog);
 
             RegisterAzureRepositories(builder, _settings.Db);
             RegisterServices(builder);
-
-            builder.Populate(_services);
         }
 
         private static void RegisterServices(ContainerBuilder builder)
