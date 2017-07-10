@@ -31,7 +31,6 @@ namespace Lykke.Job.SolarCoinQueueHandler.Core
         public class HealthSettings
         {
             public TimeSpan MaxMessageProcessingDuration { get; set; }
-            public TimeSpan MaxMessageProcessingIdleDuration { get; set; }
             public int MaxMessageProcessingFailedInARow { get; set; }
         }
 
