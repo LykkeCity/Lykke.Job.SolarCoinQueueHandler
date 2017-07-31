@@ -2,12 +2,12 @@
 using System.Threading.Tasks;
 using Common;
 using Common.Log;
+using Lykke.Service.ExchangeOperations.Contracts;
 using Lykke.Job.SolarCoinQueueHandler.Contract;
 using Lykke.Job.SolarCoinQueueHandler.Core;
 using Lykke.Job.SolarCoinQueueHandler.Core.Domain.BitCoin;
 using Lykke.Job.SolarCoinQueueHandler.Core.Domain.PaymentSystems;
 using Lykke.Job.SolarCoinQueueHandler.Core.Services;
-using Lykke.Job.SolarCoinQueueHandler.Services.Exchange;
 using Lykke.JobTriggers.Triggers.Attributes;
 
 namespace Lykke.Job.SolarCoinQueueHandler.TriggerHandlers
@@ -16,14 +16,18 @@ namespace Lykke.Job.SolarCoinQueueHandler.TriggerHandlers
     {
         private readonly IWalletCredentialsRepository _walletCredentialsRepository;
         private readonly ILog _log;
-        private readonly ExchangeOperationsService _exchangeOperationsService;
+        private readonly IExchangeOperationsService _exchangeOperationsService;
         private readonly IPaymentSystemsRawLog _paymentSystemsRawLog;
         private readonly IPaymentTransactionsRepository _paymentTransactionsRepository;
         private readonly IHealthService _healthService;
 
-        public SolarCoinQueueHandler(IWalletCredentialsRepository walletCredentialsRepository, ILog log,
-            ExchangeOperationsService exchangeOperationsService, IPaymentSystemsRawLog paymentSystemsRawLog,
-            IPaymentTransactionsRepository paymentTransactionsRepository, IHealthService healthService)
+        public SolarCoinQueueHandler(
+            IWalletCredentialsRepository walletCredentialsRepository,
+            ILog log,
+            IExchangeOperationsService exchangeOperationsService,
+            IPaymentSystemsRawLog paymentSystemsRawLog,
+            IPaymentTransactionsRepository paymentTransactionsRepository,
+            IHealthService healthService)
         {
             _walletCredentialsRepository = walletCredentialsRepository;
             _log = log;
@@ -69,7 +73,7 @@ namespace Lykke.Job.SolarCoinQueueHandler.TriggerHandlers
                     return;
                 }
 
-                var result = await _exchangeOperationsService.IssueAsync(walletCreds.ClientId, LykkeConstants.SolarAssetId, msg.Amount);
+                var result = await _exchangeOperationsService.CashInAsync(walletCreds.ClientId, LykkeConstants.SolarAssetId, msg.Amount);
 
                 if (!result.IsOk())
                 {
