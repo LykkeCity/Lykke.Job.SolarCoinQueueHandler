@@ -4,6 +4,8 @@ using AzureStorage.Tables;
 using AzureStorage.Tables.Templates.Index;
 using Common;
 using Common.Log;
+using Lykke.Service.ExchangeOperations.Contracts;
+using Lykke.Service.ExchangeOperations.Client;
 using Lykke.Job.SolarCoinQueueHandler.AzureRepositories.BitCoin;
 using Lykke.Job.SolarCoinQueueHandler.AzureRepositories.PaymentSystems;
 using Lykke.Job.SolarCoinQueueHandler.Core;
@@ -11,7 +13,6 @@ using Lykke.Job.SolarCoinQueueHandler.Core.Domain.BitCoin;
 using Lykke.Job.SolarCoinQueueHandler.Core.Domain.PaymentSystems;
 using Lykke.Job.SolarCoinQueueHandler.Core.Services;
 using Lykke.Job.SolarCoinQueueHandler.Services;
-using Lykke.Job.SolarCoinQueueHandler.Services.Exchange;
 using Lykke.MatchingEngine.Connector.Services;
 
 namespace Lykke.Job.SolarCoinQueueHandler.Modules
@@ -51,12 +52,13 @@ namespace Lykke.Job.SolarCoinQueueHandler.Modules
             builder.BindMeClient(_settings.MatchingEngine.IpEndpoint.GetClientIpEndPoint(), socketLog);
 
             RegisterAzureRepositories(builder, _settings.Db);
-            RegisterServices(builder);
+            RegisterServices(builder, _settings);
         }
 
-        private static void RegisterServices(ContainerBuilder builder)
+        private static void RegisterServices(ContainerBuilder builder, AppSettings.SolarCoinQueueHandlerSettings appSettings)
         {
-            builder.RegisterType<ExchangeOperationsService>().SingleInstance();
+            var exchangeOperationsService = new ExchangeOperationsServiceClient(appSettings.ExchangeOperationsServiceUrl);
+            builder.RegisterInstance(exchangeOperationsService).As<IExchangeOperationsService>().SingleInstance();
         }
 
         private void RegisterAzureRepositories(ContainerBuilder builder, AppSettings.DbSettings settings)
