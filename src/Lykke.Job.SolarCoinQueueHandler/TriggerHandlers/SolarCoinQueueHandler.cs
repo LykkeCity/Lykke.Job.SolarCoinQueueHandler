@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Common;
 using Common.Log;
-using Lykke.Service.ExchangeOperations.Contracts;
+using Lykke.Service.ExchangeOperations.Client;
 using Lykke.Job.SolarCoinQueueHandler.Contract;
 using Lykke.Job.SolarCoinQueueHandler.Core;
 using Lykke.Job.SolarCoinQueueHandler.Core.Domain.BitCoin;
@@ -16,7 +16,7 @@ namespace Lykke.Job.SolarCoinQueueHandler.TriggerHandlers
     {
         private readonly IWalletCredentialsRepository _walletCredentialsRepository;
         private readonly ILog _log;
-        private readonly IExchangeOperationsService _exchangeOperationsService;
+        private readonly IExchangeOperationsServiceClient _exchangeOperationsService;
         private readonly IPaymentSystemsRawLog _paymentSystemsRawLog;
         private readonly IPaymentTransactionsRepository _paymentTransactionsRepository;
         private readonly IHealthService _healthService;
@@ -24,7 +24,7 @@ namespace Lykke.Job.SolarCoinQueueHandler.TriggerHandlers
         public SolarCoinQueueHandler(
             IWalletCredentialsRepository walletCredentialsRepository,
             ILog log,
-            IExchangeOperationsService exchangeOperationsService,
+            IExchangeOperationsServiceClient exchangeOperationsService,
             IPaymentSystemsRawLog paymentSystemsRawLog,
             IPaymentTransactionsRepository paymentTransactionsRepository,
             IHealthService healthService)
