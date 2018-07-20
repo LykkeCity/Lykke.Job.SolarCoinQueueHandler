@@ -16,7 +16,7 @@
     <PackageReference Include="Lykke.Common" Version="7.0.2" />
     <PackageReference Include="Lykke.Common.ApiLibrary" Version="1.10.1" />
     <PackageReference Include="Lykke.JobTriggers" Version="2.2.0" />
-    <PackageReference Include="Lykke.Logs" Version="3.6.0" />
+    <PackageReference Include="Lykke.Logs" Version="5.1.1" />
     <PackageReference Include="Lykke.Service.ExchangeOperations.Client" Version="1.1.7" />
     <PackageReference Include="Lykke.Service.ExchangeOperations.Contracts" Version="1.0.6" />
     <PackageReference Include="Lykke.SettingsReader" Version="2.4.1" />
