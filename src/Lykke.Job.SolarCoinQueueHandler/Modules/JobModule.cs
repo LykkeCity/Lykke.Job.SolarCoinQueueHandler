@@ -63,6 +63,9 @@ namespace Lykke.Job.SolarCoinQueueHandler.Modules
                 new WalletCredentialsRepository(
                     AzureTableStorage<WalletCredentialsEntity>.Create(_dbManager.ConnectionString(s => s.ClientPersonalInfoConnString), "WalletCredentials", _log)));
 
+            builder.RegisterInstance<IBcnClientCredentialsRepository>(
+                new BcnClientCredentialsRepository(
+                    AzureTableStorage<BcnCredentialsRecordEntity>.Create(_dbManager.ConnectionString(s => s.ClientPersonalInfoConnString), "BcnClientCredentials", _log)));
 
             builder.RegisterInstance<IPaymentTransactionsRepository>(
                 new PaymentTransactionsRepository(

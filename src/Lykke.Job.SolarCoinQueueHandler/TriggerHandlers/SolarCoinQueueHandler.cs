@@ -20,6 +20,7 @@ namespace Lykke.Job.SolarCoinQueueHandler.TriggerHandlers
         private readonly IPaymentSystemsRawLog _paymentSystemsRawLog;
         private readonly IPaymentTransactionsRepository _paymentTransactionsRepository;
         private readonly IHealthService _healthService;
+        private readonly IBcnClientCredentialsRepository _bcnClientCredentialsRepository;
 
         public SolarCoinQueueHandler(
             IWalletCredentialsRepository walletCredentialsRepository,
@@ -27,7 +28,8 @@ namespace Lykke.Job.SolarCoinQueueHandler.TriggerHandlers
             IExchangeOperationsServiceClient exchangeOperationsService,
             IPaymentSystemsRawLog paymentSystemsRawLog,
             IPaymentTransactionsRepository paymentTransactionsRepository,
-            IHealthService healthService)
+            IHealthService healthService,
+            IBcnClientCredentialsRepository bcnClientCredentialsRepository)
         {
             _walletCredentialsRepository = walletCredentialsRepository;
             _log = log;
@@ -35,6 +37,7 @@ namespace Lykke.Job.SolarCoinQueueHandler.TriggerHandlers
             _paymentSystemsRawLog = paymentSystemsRawLog;
             _paymentTransactionsRepository = paymentTransactionsRepository;
             _healthService = healthService;
+            _bcnClientCredentialsRepository = bcnClientCredentialsRepository;
         }
 
         [QueueTrigger("solar-in")]
@@ -46,8 +49,10 @@ namespace Lykke.Job.SolarCoinQueueHandler.TriggerHandlers
             {
                 _healthService.TraceMessageProcessingStarted();
 
+                var bcnRecord = await _bcnClientCredentialsRepository.GetByAssetAddressAsync(msg.Address);
                 var walletCreds = await _walletCredentialsRepository.GetBySolarCoinWalletAsync(msg.Address);
-                if (walletCreds == null)
+                string clientId = bcnRecord?.ClientId ?? walletCreds?.ClientId;
+                if (string.IsNullOrEmpty(clientId))
                 {
                     await _log.WriteWarningAsync("SolarCoinQueueHandler", "ProcessInMessage", msg.ToJson(), "Solar wallet not found");
 
@@ -61,7 +66,7 @@ namespace Lykke.Job.SolarCoinQueueHandler.TriggerHandlers
                 var txId = $"{msg.TxId}_{msg.Address}";
 
                 var pt = await _paymentTransactionsRepository.TryCreateAsync(PaymentTransaction.Create(
-                    txId, CashInPaymentSystem.SolarCoin, walletCreds.ClientId, msg.Amount,
+                    txId, CashInPaymentSystem.SolarCoin, clientId, msg.Amount,
                     LykkeConstants.SolarAssetId, LykkeConstants.SolarAssetId, null));
 
                 if (pt == null)
@@ -73,7 +78,7 @@ namespace Lykke.Job.SolarCoinQueueHandler.TriggerHandlers
                     return;
                 }
 
-                var result = await _exchangeOperationsService.CashInAsync(walletCreds.ClientId, LykkeConstants.SolarAssetId, msg.Amount);
+                var result = await _exchangeOperationsService.CashInAsync(clientId, LykkeConstants.SolarAssetId, msg.Amount);
 
                 if (!result.IsOk())
                 {
