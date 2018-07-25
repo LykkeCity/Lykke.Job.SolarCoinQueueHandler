@@ -39,19 +39,6 @@ namespace Lykke.Job.SolarCoinQueueHandler.Core.Domain.BitCoin
 
     public interface IBcnClientCredentialsRepository
     {
-        Task SaveAsync(IBcnCredentialsRecord credsRecord);
-        Task<IBcnCredentialsRecord> GetAsync(string clientId, string assetId);
         Task<IBcnCredentialsRecord> GetByAssetAddressAsync(string assetAddress);
-        Task<IEnumerable<IBcnCredentialsRecord>> GetAsync(string clientId);
-        Task<string> GetClientAddress(string clientId);
-        Task InsertOrReplaceAsync(IBcnCredentialsRecord credsRecord);
-    }
-
-    public static class Ext
-    {
-        public static string GetAssetAddress(this IEnumerable<IBcnCredentialsRecord> creds, string assetId)
-        {
-            return creds.FirstOrDefault(x => x.AssetId == assetId)?.AssetAddress;
-        }
     }
 }
